@@ -1,13 +1,10 @@
-#include <Arduino.h>
+#include "main.hpp"
 
 
-#define REL_GERCON    5
-#define REL_SPEAKER   4
-#define REL_MP3       3
-
-#define IN_GERCON     2
-
-
+/**
+ * @brief 
+ * 
+ */
 void setup() 
 {
     pinMode(IN_GERCON, INPUT);
@@ -17,9 +14,13 @@ void setup()
     pinMode(REL_MP3, OUTPUT);       digitalWrite(REL_MP3, LOW);
 }
 
+/**
+ * @brief 
+ * 
+ */
 void loop() 
 {
-    // if(digitalRead(IN_GERCON) == LOW)
+    if(digitalRead(IN_GERCON) == LOW)
     {
         digitalWrite(REL_GERCON, HIGH);
         delay(500);
