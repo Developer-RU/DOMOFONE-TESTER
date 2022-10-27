@@ -1,4 +1,9 @@
+#include <avr/wdt.h>
 #include "main.hpp"
+
+
+bool flagCall = false;
+int counter = 0;
 
 
 /**
@@ -7,7 +12,10 @@
  */
 void setup() 
 {
-    pinMode(IN_GERCON, INPUT);
+    wdt_disable();
+    wdt_enable(WDTO_8S);
+
+    pinMode(IN_GERCON, INPUT);      digitalWrite(IN_GERCON, HIGH);
 
     pinMode(REL_GERCON, OUTPUT);    digitalWrite(REL_GERCON, LOW);
     pinMode(REL_SPEAKER, OUTPUT);   digitalWrite(REL_SPEAKER, LOW);
@@ -20,21 +28,44 @@ void setup()
  */
 void loop() 
 {
-    if(digitalRead(IN_GERCON) == LOW)
+    wdt_reset();
+
+    if(counter < 500 && flagCall == false)
     {
-        digitalWrite(REL_GERCON, HIGH);
+        if(digitalRead(IN_GERCON) == LOW) { counter++; }
+        if(digitalRead(IN_GERCON) == HIGH) { if(counter > 0) counter--; }
+        if(counter == 500) { flagCall = true; }
+    }
+
+    if(flagCall == true)
+    {
         delay(500);
+        wdt_reset();
+        digitalWrite(REL_GERCON, HIGH);
+        wdt_reset();
+        delay(500);
+        digitalWrite(REL_MP3, HIGH);
+        int c = 20;
+        while(c > 0)
+        {
+            delay(500);
+            c--;
+            wdt_reset();
+        }
+        digitalWrite(REL_MP3, LOW);
+
+        c = 10;
+        while(c > 0)
+        {
+            delay(500);
+            c--;
+            wdt_reset();
+        }        
+        
         digitalWrite(REL_GERCON, LOW);
         delay(500);
 
-        digitalWrite(REL_SPEAKER, HIGH);
-        delay(500);
-        digitalWrite(REL_SPEAKER, LOW);
-        delay(500);
-
-        digitalWrite(REL_MP3, HIGH);
-        delay(5000);
-        digitalWrite(REL_MP3, LOW);
-        delay(500);
+        flagCall = false;
+        counter = 0;
     }
 }

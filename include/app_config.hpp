@@ -5,8 +5,8 @@
 #include "Arduino.h"
 
 
-#define REL_GERCON    5
-#define REL_SPEAKER   4
+#define REL_GERCON    4
+#define REL_SPEAKER   5
 #define REL_MP3       3
 
 #define IN_GERCON     2
